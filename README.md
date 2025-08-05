@@ -1,0 +1,1 @@
+# airbnb_istings_bangkok
