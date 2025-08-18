@@ -1,119 +1,138 @@
-# Capstone Project 2 - Analisis Popularitas Listing Airbnb di Bangkok
+````markdown
+# Capstone Project 2: Analysis of Popularity of Airbnb Listings in Bangkok
 
-## Langkah 0: Latar Belakang & Rumusan Masalah
+## Background & Problem Statement
 
-Pasar properti di Bangkok menunjukkan tren peningkatan popularitas untuk penyewaan jangka pendek melalui platform seperti Airbnb. Namun, tidak semua listing memiliki performa yang sama. Beberapa listing sangat populer dan sering dipesan, sementara lainnya sepi peminat. Faktor-faktor seperti lokasi, harga, tipe ruang, dan aktivitas host menjadi penentu utama kesuksesan listing.
+### Background
+Airbnb in Bangkok has more than 14,000 active listings, with an average annual revenue of approximately $7,443 and an occupancy rate of around 44%. While there is variation in listing performance, key factors such as price, room type, location, and reviews play a significant role in determining the popularity and potential revenue. However, many listings are suboptimal in attracting guests, especially those that rarely update information or receive reviews.
 
-Sebagai seorang **data analyst** yang dikontrak oleh sekelompok **investor properti**, Anda diminta untuk menganalisis dataset Airbnb Listings Bangkok dan memberikan rekomendasi strategis mengenai properti seperti apa yang layak dijadikan investasi.
+**Source:** [Airroi](https://www.airroi.com/report/world/thailand/bangkok/bangkok)
 
 ### Problem Statement
+The goal of this analysis is to identify the factors influencing the performance of Airbnb listings in Bangkok, both in terms of popularity and potential revenue. These factors will be explored based on available data, including room types, price, location, and guest reviews. A better understanding of these factors will allow Airbnb to provide more accurate recommendations to hosts to optimize their listings.
 
-Investor ingin mengetahui **faktor-faktor apa saja yang mempengaruhi popularitas listing Airbnb di Bangkok**, agar dapat mengalokasikan modal investasi mereka secara optimal.
-
-### Tujuan Analisis (Analytical Breakdown Questions):
-
-1. Bagaimana sebaran listing berdasarkan `room_type` dan `neighborhood`?
-2. Apakah listing dengan harga yang lebih tinggi memiliki tingkat okupansi (`availability_365`) yang rendah?
-3. Karakteristik listing seperti apa yang mendapatkan lebih banyak review dalam 12 bulan terakhir?
-4. Faktor-faktor apa yang paling mempengaruhi popularitas listing secara keseluruhan?
-5. Apakah host dengan banyak listing cenderung memiliki listing dengan kualitas (review/okupansi) lebih rendah?
+This analysis aims to delve into the factors affecting listing performance and provide actionable recommendations to optimize revenue and occupancy potential. The first step involves data cleaning and feature engineering to ensure data quality and prepare additional features for enhanced analysis.
 
 ---
 
-## Langkah 1: Data Understanding & Cleaning
+## Data Preparation
 
-Dataset yang digunakan adalah **Airbnb Listings Bangkok (tahun XXXX)** dengan fitur-fitur seperti:
+Data cleaning and feature engineering are essential first steps. The dataset will be evaluated to ensure its quality by checking for missing values, duplicates, or inconsistent data. Additionally, new features will be developed to enrich the analysis and provide deeper insights into the factors that affect listing performance.
 
-- Identitas Listing (`id`, `name`)
-- Informasi Host (`host_id`, `host_name`)
-- Lokasi (`neighborhood`, `latitude`, `longitude`)
-- Detail Properti (`room_type`, `price`, `minimum_nights`)
-- Metrik Popularitas (`number_of_reviews`, `number_of_reviews_ltm`, `last_review`)
-- Metrik Host & Ketersediaan (`calculated_host_listings_count`, `availability_365`)
+### Import Libraries
 
-### Data Cleaning Steps:
+```python
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+from scipy import stats
+import requests
+import folium
+import warnings
+warnings.filterwarnings('ignore')
+````
 
-1. **Backup Raw Dataset:**
+| Library             | Purpose                                                                                                              |
+| ------------------- | -------------------------------------------------------------------------------------------------------------------- |
+| `pandas`            | Used for data manipulation such as cleaning, transformation, and analysis of tabular data.                           |
+| `numpy`             | Used for numerical operations, mainly for calculating statistics and manipulating arrays/matrices.                   |
+| `matplotlib.pyplot` | Used for data visualization, particularly basic charts like histograms, boxplots, etc.                               |
+| `seaborn`           | Used for advanced data visualization with more attractive and informative designs (e.g., heatmaps, pairplots, etc.). |
+| `scipy.stats`       | Used for statistical analysis like normality tests, hypothesis testing, and outlier detection.                       |
+| `requests`          | Used for HTTP requests, useful when downloading data from APIs or external sources.                                  |
+| `folium`            | Used for interactive map visualization, useful when data involves geographic coordinates (latitude/longitude).       |
+| `warnings`          | To manage and suppress warning messages during code execution.                                                       |
 
-   - Backup dataset original sebelum melakukan cleaning.
+### Load Dataset
 
-2. **Overview & Diagnosis:**
+The first step in this analysis is to load the dataset that will be used. Data is imported from two sources:
 
-   - Mengecek dimensi data, tipe data, dan jumlah missing values per kolom.
+* The main dataset in CSV format containing information about Airbnb listings in Bangkok.
+* A GeoJSON file describing districts in Bangkok, used for geographical visualization.
 
-3. **Duplicate Handling:**
+```python
+url = 'https://raw.githubusercontent.com/Quinntes/airbnb_listings_bangkok/refs/heads/main/airbnb_listings_bangkok.csv'
+df_raw = pd.read_csv(url)
+url = 'https://raw.githubusercontent.com/Quinntes/airbnb_listings_bangkok/main/bangkok-districts.geojson'
 
-   - Memeriksa apakah terdapat baris duplikat dan menanganinya sesuai konteks.
+response = requests.get(url)
+geojson_data = response.json()  # Get GeoJSON data
+```
 
-4. **Data Type Correction:**
+### Data Cleaning
 
-   - Membersihkan kolom `price` dari simbol mata uang dan mengkonversinya ke tipe data numerik.
-   - Mengkonversi `last_review` menjadi tipe datetime.
+* **Backup Raw Dataset**: Create a backup of the raw dataset before any cleaning is done to ensure the original data remains intact.
+* **Overview & Diagnosis**: Check the shape of the dataset, data types, and missing values per column.
+* **Duplicate Handling**: Verify that there are no duplicate rows.
+* **Data Type Correction**: Ensure columns such as `price` are numeric and convert `last_review` to datetime.
+* **Missing Values**: Handle missing values for columns like `name` and `host_name`.
+* **Outlier Detection**: Identify and handle outliers in columns such as `price` and `minimum_nights`.
+* **Feature Engineering**: Create new features like `days_since_last_review`, `host_type`, and `estimated_revenue`.
 
-5. **Missing Values Handling:**
+### Exploratory Data Analysis (EDA)
 
-   - Menentukan strategi handling kolom dengan missing values seperti `host_name` dan `last_review`.
+The data will be analyzed to answer the following questions:
 
-6. **Outlier Detection & Handling:**
+1. **Distribution of Listings by Room Type and Neighborhood**
 
-   - Mendeteksi outlier pada kolom numerik kritikal (price, minimum_nights) dan mengambil tindakan sesuai justifikasi.
+   * Visualizations: Bar chart, Pie chart
+   * Insight: Identifying the most common room types and their geographical spread.
 
-7. **Feature Engineering:**
+2. **Price vs. Occupancy**
 
-   - Membuat fitur baru seperti `days_since_last_review`, `host_type`, dan `estimated_revenue`.
+   * Visualizations: Scatter plot between `price` and `availability_365`
+   * Insight: Identifying the optimal price points for listings.
+
+3. **Characteristics of Popular Listings (More Reviews)**
+
+   * Visualizations: Boxplot for comparing `price`, `room_type`, and `minimum_nights` for listings with high reviews.
+
+4. **Factors Affecting Popularity**
+
+   * Visualizations: Heatmap of correlations between numeric variables.
+   * Insight: Identifying variables strongly correlated with listing popularity.
+
+5. **Hosts with Multiple Listings**
+
+   * Visualizations: Bar chart/Boxplot comparing reviews based on `host_type`.
 
 ---
 
-## Langkah 2: Data Analysis (Exploratory Data Analysis)
+## Insight & Recommendations
 
-Analisis dilakukan untuk menjawab 5 pertanyaan utama yang telah dirumuskan.
+### Insights:
 
-1. **Sebaran Listing berdasarkan Tipe Ruang & Neighborhood:**
+* Based on the findings from EDA, the following insights emerged regarding Airbnb listings in Bangkok:
 
-   - Visualisasi: Bar chart & pie chart.
-   - Insight: Lokasi dengan supply terbanyak & proporsi tipe ruang.
+  * Room type distribution shows a high concentration of `Entire home/apt` listings.
+  * Listings with higher prices tend to have lower availability and fewer reviews.
+  * Listings with active reviews are more popular, while those without reviews tend to have lower prices and fewer bookings.
 
-2. **Analisis Harga vs Okupansi:**
+### Recommendations:
 
-   - Visualisasi: Scatter plot antara `price` dan `availability_365`.
-   - Insight: Identifikasi "sweet spot" harga yang optimal.
-
-3. **Karakteristik Listing Populer (Banyak Review):**
-
-   - Visualisasi: Boxplot perbandingan `price`, `room_type`, `minimum_nights` pada listing dengan review tinggi.
-
-4. **Faktor-faktor yang Mempengaruhi Popularitas:**
-
-   - Visualisasi: Heatmap korelasi antar variabel numerik.
-   - Insight: Variabel apa yang berkorelasi kuat dengan popularitas.
-
-5. **Analisis Host dengan Banyak Listing:**
-
-   - Visualisasi: Bar chart atau boxplot perbandingan rata-rata review berdasarkan kategori `host_type`.
+* **Invest in Entire Homes/Apartments**: These listings tend to have the highest price points and are more frequently booked.
+* **Focus on High-demand Neighborhoods**: Areas like Vadhana and Khlong Toei dominate the listing count and present competitive opportunities for hosts.
+* **Price Optimization**: Implement dynamic pricing strategies based on seasonal trends and competition.
+* **Increase Review Counts**: Encourage guests to leave reviews, which correlates with higher visibility and bookings.
 
 ---
 
-## Langkah 3: Insight & Rekomendasi
+## Tableau Visualization
 
-### Insight:
+Interactive Tableau dashboard will be provided upon project completion. The dashboard will present key metrics and visualizations such as:
 
-(Tempatkan hasil temuan utama setelah EDA selesai)
-
-### Rekomendasi Strategis:
-
-(Tempatkan saran actionable di sini. Contoh: 'Prioritaskan investasi pada Entire home/apt di Sukhumvit karena menunjukkan estimasi pendapatan tertinggi dengan tingkat ketersediaan terendah')
-
----
-
-## Langkah 4: Visualisasi Tableau
-
-Tautan ke dashboard Tableau interaktif akan disediakan setelah visualisasi selesai.
+* Map of Airbnb listings by price and popularity.
+* Price vs. availability scatter plots.
+* Heatmaps of listings by neighborhood and room type.
 
 ---
 
 ## Deliverables
 
-1. Jupyter Notebook (file .ipynb)
-2. Dashboard Tableau (link Tableau Public)
-3. Slide Presentasi Capstone 2
-4. README.md (dokumen ini)
+1. **Jupyter Notebook**: `airbnb_analysis.ipynb`
+2. **Tableau Dashboard**: Link to Tableau Public
+3. **Presentation Slides**: Summary and findings in slide format
+4. **README.md**: Project documentation (this file)
+
+---
