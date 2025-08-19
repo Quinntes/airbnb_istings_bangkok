@@ -69,43 +69,105 @@ geojson_data = response.json()  # Get GeoJSON data
 - **Outlier Detection**: Identify and handle outliers in columns such as `price` and `minimum_nights`.
 - **Feature Engineering**: Create new features like `days_since_last_review`, `host_type`, and `estimated_revenue`.
 
+---
+
 ### Exploratory Data Analysis (EDA)
 
-The data will be analyzed to answer the following questions:
+Here are the key findings from the data analysis conducted to understand the factors influencing Airbnb listing performance in Bangkok:
 
-1. **Distribution of Listings by Room Type and Neighborhood**  
-   - Visualizations: Bar chart, Pie chart
-   - Insight: Identifying the most common room types and their geographical spread.
+1. **Dominant Room Type and Price by Room Type**
 
-2. **Price vs. Occupancy**  
-   - Visualizations: Scatter plot between `price` and `availability_365`
-   - Insight: Identifying the optimal price points for listings.
+   * The "Entire home/apt" room type has the highest number of listings and significantly higher prices compared to other room types. These listings tend to have more reviews but lower availability.
 
-3. **Characteristics of Popular Listings (More Reviews)**  
-   - Visualizations: Boxplot for comparing `price`, `room_type`, and `minimum_nights` for listings with high reviews.
+2. **Neighborhood Distribution and Location’s Impact on Competition**
 
-4. **Factors Affecting Popularity**  
-   - Visualizations: Heatmap of correlations between numeric variables.
-   - Insight: Identifying variables strongly correlated with listing popularity.
+   * Vadhana and Khlong Toei have the highest number of listings, indicating areas with higher competition between hosts. Location plays a key role in pricing strategy and occupancy.
 
-5. **Hosts with Multiple Listings**  
-   - Visualizations: Bar chart/Boxplot comparing reviews based on `host_type`.
+3. **Professional vs. Non-Professional Hosts**
+
+   * The majority of hosts (71%) are professionals managing multiple listings, while 29% are non-professionals with a single listing. Professional hosts tend to have more varied pricing and performance, although most listings are within the lower price range.
+
+4. **Price Correlation with Reviews and Availability**
+
+   * There is no strong correlation between price and review count, although higher-priced listings do not always have more reviews. High-priced listings tend to have lower availability but this pattern is not consistent.
+
+5. **Minimum Night Duration and Guest Preferences**
+
+   * Most listings set a minimum stay of just one night, indicating that guests prefer shorter stays.
+
+6. **Seasonal Trends in Price and Reviews**
+
+   * Prices and review counts show seasonal fluctuations, with peaks in December (holiday season). Summer months see lower prices and fewer reviews.
+
+7. **Correlation Between Price, Reviews, and Occupancy**
+
+   * No significant correlation was found between price and occupancy. The correlation between price and review count is weak, suggesting that other factors (like location and listing quality) are more influential.
+
+8. **Popular Keywords in Listings and Sentiment**
+
+   * Keywords related to location and accessibility (e.g., "BTS" and "near") dominate in listing descriptions. Descriptions are generally neutral, with little positive or negative sentiment. Listings with more reviews emphasize convenience and comfort.
+
+9. **Impact of Last Review Time on Price and Popularity**
+
+   * No strong relationship was found between the time since the last review and price. However, listings with longer gaps between reviews tend to have fewer reviews overall, indicating that recent reviews increase popularity.
+
+10. **Impact of Proximity to Tourist Attractions on Price and Performance**
+
+    * No strong correlation was found between proximity to key tourist attractions and price. Listings closer to popular tourist spots don’t always have higher prices, but some more distant areas (like Terminal 21) tend to be more affordable.
 
 ---
 
-## Insight & Recommendations
+### Recommendations for Airbnb Hosts
 
-### Insights:
-- Based on the findings from EDA, the following insights emerged regarding Airbnb listings in Bangkok:
-  - Room type distribution shows a high concentration of `Entire home/apt` listings.
-  - Listings with higher prices tend to have lower availability and fewer reviews.
-  - Listings with active reviews are more popular, while those without reviews tend to have lower prices and fewer bookings.
+1. **Optimize Location and Accessibility**
+   Highlight your property's accessibility, especially if close to public transportation (e.g., BTS, MRT), and emphasize proximity to tourist attractions like the Grand Palace and Khao San Road. Use keywords like “near BTS” in your listing description to increase visibility.
 
-### Recommendations:
-- **Invest in Entire Homes/Apartments**: These listings tend to have the highest price points and are more frequently booked.
-- **Focus on High-demand Neighborhoods**: Areas like Vadhana and Khlong Toei dominate the listing count and present competitive opportunities for hosts.
-- **Price Optimization**: Implement dynamic pricing strategies based on seasonal trends and competition.
-- **Increase Review Counts**: Encourage guests to leave reviews, which correlates with higher visibility and bookings.
+2. **Enhance Room Types and Pricing Strategy**
+   Focus on the "Entire home/apt" room type, which tends to dominate the market. Ensure high-quality amenities and competitive pricing. Professional hosts should offer a range of prices to cater to different market segments, while non-professional hosts should focus on competitive pricing with essential amenities.
+
+3. **Leverage Seasonal Pricing and Availability**
+   Adjust prices based on seasonal demand—raise prices during peak seasons (Winter and Spring) and offer discounts in off-peak seasons (Summer and Fall). Set flexible minimum stay policies, particularly during slower periods, and ensure availability is maintained, especially for lower-priced listings.
+
+4. **Increase Reviews and Popularity**
+   Encourage guests to leave reviews by offering incentives or discounts. Listings with more reviews are more likely to attract guests and achieve higher occupancy. Use positive reviews to enhance your listing’s attractiveness and visibility.
+
+5. **Improve Management and Listing Performance in Competitive Areas**
+   In high-competition areas like Vadhana and Khlong Toei, enhance your listing’s quality with better photos, descriptions, and promotional offers to stand out. Focus on improving both the listing’s appearance and strategic pricing to remain competitive.
+
+6. **Focus on Room Type and Pricing Adjustments**
+   For "Entire home/apt" listings, focus on enhancing amenities and exclusivity to justify higher prices. For "Private room" listings, keep prices competitive while ensuring comfort and appeal.
+
+7. **Understand the Relationship Between Price and Reviews**
+   While there is a weak correlation between price and the number of reviews, listings with more positive reviews and reasonable prices tend to attract more guests. Focus on improving guest experiences and increasing review counts.
+
+---
+
+### Key Conclusions
+
+1. Location and accessibility are crucial factors that should be emphasized in each listing.
+2. Prices should be adjusted according to seasonal trends to maximize revenue.
+3. Listing quality and review count significantly impact price and occupancy.
+4. Flexible pricing strategies and diversified room types help reach a wider market.
+5. Efficient listing management is essential for professional hosts to stay competitive.
+
+By following these recommendations, Airbnb hosts in Bangkok can improve their listing performance, optimize revenue, and maintain high occupancy rates.
+
+---
+
+### Key Suggestions
+
+
+1. **Optimize Listings Based on Location, Accessibility, and Market Trends**
+   Focus on strategic location features such as proximity to BTS, MRT, and popular tourist spots (e.g., Grand Palace, Khao San Road) in your listing descriptions. Additionally, adjust your pricing based on seasonal trends—raise prices during peak seasons (Winter and Spring) and offer discounts in off-peak times (Summer and Fall). Regularly monitor market trends to remain competitive.
+
+2. **Enhance Appeal through Reviews and Sentiment**
+   Listings with more reviews tend to attract more guests. Encourage guests to leave reviews by offering incentives and emphasize positive reviews in your descriptions. Focus on improving guest engagement to increase review count and listing popularity.
+
+3. **Focus on Room Type, Availability, and Competitive Pricing**
+   Ensure "Entire home/apt" listings are well-maintained with high-quality amenities, and for "Private room" listings, maintain competitive prices while ensuring comfort. Keep availability high, especially for budget-friendly listings, to improve occupancy. In competitive neighborhoods (e.g., Vadhana, Khlong Toei), adjust pricing carefully and use promotions to stand out.
+
+4. **Use Data Insights for Better Decision Making**
+   Understand the relationship between price, reviews, and availability to optimize your pricing strategies. Continuously improve your listing quality, service, and guest engagement to maximize occupancy and visibility.
 
 ---
 
