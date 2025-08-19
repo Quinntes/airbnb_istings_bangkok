@@ -184,7 +184,7 @@ Interactive Tableau dashboard will be provided upon project completion. The dash
 
 1. **Jupyter Notebook**: `airbnb_listings_bangkok.ipynb`
 2. **Tableau Dashboard**: [Tableau](https://public.tableau.com/views/airbnb_listings_bangkok_tableu/Dashboard1?:language=en-US&publish=yes&:sid=&:redirect=auth&:display_count=n&:origin=viz_share_link)
-3. **Presentation Slides**: Summary and findings in slide format
+3. **Presentation Slides**: [Canva](https://www.canva.com/design/DAGwf_62Fyg/tIMif-pzrLMRGWWG4aYqvg/edit?utm_content=DAGwf_62Fyg&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton)
 4. **README.md**: Project documentation (this file)
 
 ---
